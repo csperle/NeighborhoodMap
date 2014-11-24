@@ -4,16 +4,15 @@ Little google maps web-application to visualize interesting locations near you. 
 
 ## Prerequisite
  - To setup the application, PHP 5 needs to be installed on your machine (maybe easiest to install through a [LAMP](https://en.wikipedia.org/wiki/LAMP_%28software_bundle%29) bundle)
- - Webspace with PHP 5 Support
- - MySQL 5 Database access
+ - Webspace with PHP 5 support and MySQL database access
  - Own Google Maps API Key (can be [obtained here](https://developers.google.com/maps/documentation/javascript/tutorial#api_key))
 
 ## Setup
 First, you need to setup the application before you can use it. Clone the git repository and follow these steps.
 
 ### Download and install the server side PHP dependencies
-- Start a shell and change-dir into the `web`-folder of the neighborhood application (where the `composer.json`-File is located).
-- This application uses [Composer](https://getcomposer.org) for dependency management in PHP. On *ix systems install it using:
+- Start a shell and change-dir into the `web/service`-folder of the neighborhood application (where the `composer.json`-File is located).
+- This application uses [Composer](https://getcomposer.org) for dependency management in PHP. On *ix systems, install it using:
 ```sh
 curl -sS https://getcomposer.org/installer | php
 ```
@@ -23,6 +22,8 @@ curl -sS https://getcomposer.org/installer | php
 ```sh
 php composer.phar install
 ```
+This step downloads and installs all PHP dependencies that are needed by the neighborhood application.
+
 ### Setup the MySQL Database
 Create the necessary tables using a MySQL client of your choice (web-hoster often offer a [phpmyadmin](http://www.phpmyadmin.net/) frontend): execute the SQL statements in the `create_tables.sql` file. (Check if a `marker` table has been created.)
 
