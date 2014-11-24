@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Nachbarschaftskarte</title>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css">
+
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    
+    <style type="text/css">
+      html, body, #map-canvas { height: 100%; margin: 0; padding: 0;}
+    </style>
+    
+    <script src="https://maps.googleapis.com/maps/api/js?key=API_KEY"></script>
+
+    <script type="text/javascript">
+      function initialize() {
+        var mapOptions = {
+          center: new google.maps.LatLng(47.553987, 7.568083),
+          zoom: 16
+        };
+        map = new google.maps.Map(document.getElementById('map-canvas'),
+            mapOptions);
+        
+        google.maps.event.addListener(map, "click", function( event ) {
+          $('input#latInput').val(event.latLng.lat());
+          $('input#lngInput').val(event.latLng.lng());
+          $('div#marker-dialog').modal({})
+        });
+        google.maps.event.addListenerOnce(map, 'idle', function(){
+          $.getJSON( "service/marker", function( data ) {
+            $.each( data, function( key, val ) {
+              createNewMarker(val);
+            });
+          });
+        });
+      }
+      google.maps.event.addDomListener(window, 'load', initialize);
+
+      function createNewMarker(data) {
+        var marker = new google.maps.Marker({
+                position: new google.maps.LatLng(data.lat, data.lng),
+                map: map,
+                title: data.title
+              });
+              var infowindow = new google.maps.InfoWindow({
+                content: '<div id="content">' + data.description + '</div>'
+              });
+              google.maps.event.addListener(marker, 'click', function() {
+                infowindow.open(map,marker);
+              });
+      }
+    </script>
+
+    <script type="text/javascript">
+    $( document ).ready(function() {
+      $('button#create-marker-button').click( function() {
+        $('div#marker-dialog').modal('hide');
+        $.post( 'service/marker', $('form#new-marker-form').serialize(), function(data) {
+             var marker = {
+                title: $('input#titleInput').val(),
+                description: $('textarea#descriptionArea').val(),
+                lat: $('input#latInput').val(),
+                lng: $('input#lngInput').val()
+             }
+             createNewMarker(marker);
+             clearDialog();
+           }
+        );
+      });
+    });
+
+    function clearDialog() {
+      $('input#titleInput').val("");
+      $('textarea#descriptionArea').val("");
+      $('input#latInput').val("");
+      $('input#lngInput').val("");
+      $('input#hpInput').val("");
+      $('input#emailInput').val("");
+    }    
+    </script>
+  </head>
+  <body>
+<div id="map-canvas"></div>
+
+<div id="marker-dialog" class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+    <form id="new-marker-form" role="form">
+      <div class="modal-body">
+        
+  <div class="form-group">
+    <label for="titleInput">Titel</label>
+    <input type="text" class="form-control" id="titleInput" name="title" placeholder="Titel eingeben">
+  </div>
+  <div class="form-group">
+    <label for="descriptionArea">Beschreibung</label>
+    <textarea class="form-control" rows="5" id="descriptionArea" name="description" placeholder="Beschreibung eingeben"></textarea>
+  </div>
+  <input type="hidden" id="latInput" name="lat"/>
+  <input type="hidden" id="lngInput" name="lng"/>
+  <div class="form-group">
+    <label for="hpInput">Homepage</label>
+    <input type="text" class="form-control" id="hpInput" name="homepage" placeholder="Homepage eingeben">
+  </div>
+  <div class="form-group">
+    <label for="emailInput">Kontakt Email</label>
+    <input type="email" class="form-control" id="emailInput" name="email" placeholder="Email Adresse eingeben">
+  </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Abbrechen</button>
+        <button type="button" id="create-marker-button" class="btn btn-primary">Speichern</button>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+  </body>
+</html>
