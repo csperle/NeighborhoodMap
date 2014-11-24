@@ -7,6 +7,8 @@ Little google maps web-application to visualize interesting locations near you. 
  - Webspace with PHP 5 support and MySQL database access
  - Own Google Maps API Key (can be [obtained here](https://developers.google.com/maps/documentation/javascript/tutorial#api_key))
 
+*Setting up and configuring this application is a little bit annoying. I am sure it is possible to do all this steps via an installation script, but I am lacking time and knowledge to write it.*
+
 ## Setup
 First, you need to setup the application before you can use it. Clone the git repository and follow these steps.
 
@@ -31,10 +33,10 @@ Create the necessary tables using a MySQL client of your choice (web-hoster ofte
 Second, you need to configure the application:
 
 ### Configure the database settings
-TODO
+Open `web/service/service.php` with a text editor and fill in the correct values for `DB_NAME`, `DB_USER`, `DB_PASSWORD` and `DB_HOST`.
 
 ###Configure the Google Maps API key
-TODO
+Open `web/index.html` with a text editor and fill in your Google Maps API Key for `API_KEY`. Also, you probably want to change the map options (`center` and `zoom`).
 
 ## Installation
 Now that you have set-up and configured the application, copy the `web`-folder to the webspace of your hoster. Installation complete!
