@@ -15,13 +15,14 @@ $app->register(new Silex\Provider\DoctrineServiceProvider(), array(
 	'password' => 'DB_PASSWORD',
 	'host' => 'DB_HOST',
 	'driver' => 'pdo_mysql',
+    'charset'  => 'utf8',
     ),
 ));
 
 $app->get('/marker', function () use ($app) {
     $output = '';
     $markers = $app['db']->fetchAll('SELECT * FROM marker');
-    return json_encode($markers);
+    return $app->json($markers);
 });
 
 $app->post('/marker', function (Request $request) use ($app) {
