@@ -41,5 +41,8 @@ Open `web/index.html` with a text editor and fill in your Google Maps API Key fo
 ###Change map options
 Change the map options: `center` and `zoom`.
 
+###Setup map icons
+As can be seen in `web/index.html` map icons have to be put into the `mapicons/` folder and be of size 128x128 (or simply change the `size` attribute).
+
 ## Installation
 Now that you have set-up and configured the application, copy the `web`-folder to the webspace of your hoster. Installation complete!

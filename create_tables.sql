@@ -2,6 +2,7 @@ CREATE TABLE IF NOT EXISTS `marker` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `lat` decimal(10,8) NOT NULL,
   `lng` decimal(11,8) NOT NULL,
+  `icon` varchar(40) NOT NULL,
   `provider` varchar(80) NOT NULL,
   `title` varchar(80) DEFAULT NULL,
   `description` varchar(1000) DEFAULT NULL,
