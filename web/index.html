@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -16,123 +16,163 @@
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
 
     <style type="text/css">
-      html, body, #map-canvas { height: 100%; margin: 0; padding: 0;}
+        html, body, #map-canvas {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar {
+            margin: 0;
+        }
     </style>
 
     <script src="https://maps.googleapis.com/maps/api/js?key=API_KEY"></script>
 
     <script type="text/javascript">
-      function initialize() {
-        var mapOptions = {
-          center: new google.maps.LatLng(47.553987, 7.568083),
-          zoom: 16
-        };
-        map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+        function initialize() {
+            markers = [];
+            var mapOptions = {
+                center: new google.maps.LatLng(47.553987, 7.568083),
+                zoom: 16
+            };
+            map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
 
-        google.maps.event.addListener(map, "click", function( event ) {
-          $('input#latInput').val(event.latLng.lat());
-          $('input#lngInput').val(event.latLng.lng());
-          $('div#marker-dialog').modal({})
-        });
-        google.maps.event.addListenerOnce(map, 'idle', function(){
-          $.getJSON( "service/marker", function( data ) {
-            $.each( data, function( key, val ) {
-              createNewMarker(val);
+            google.maps.event.addListener(map, "click", function (event) {
+                $('input#latInput').val(event.latLng.lat());
+                $('input#lngInput').val(event.latLng.lng());
+                $('div#marker-dialog').modal({})
             });
-          });
-        });
-      }
-      google.maps.event.addDomListener(window, 'load', initialize);
+            google.maps.event.addListenerOnce(map, 'idle', function () {
+                $.getJSON("service/marker", function (data) {
+                    $.each(data, function (key, val) {
+                        createNewMarker(val);
+                    });
+                });
+            });
+        }
+        google.maps.event.addDomListener(window, 'load', initialize);
 
-      function createNewMarker(data) {
-        var markerimage = {
+        function createNewMarker(data) {
+            var markerimage = {
                 url: 'mapicons/' + data.icon + '.png'
-                //, size: new google.maps.Size(30, 48)
-        };
-        var marker = new google.maps.Marker({
+                //size: new google.maps.Size(30, 48)
+            };
+            var marker = new google.maps.Marker({
                 position: new google.maps.LatLng(data.lat, data.lng),
                 map: map,
                 title: data.title,
                 icon: markerimage
-              });
-              var infowindow = new google.maps.InfoWindow({
+            });
+            var infowindow = new google.maps.InfoWindow({
                 content: '<div id="content">' + data.description + '</div>'
-              });
-              google.maps.event.addListener(marker, 'click', function() {
-                infowindow.open(map,marker);
-              });
-      }
+            });
+            google.maps.event.addListener(marker, 'click', function () {
+                infowindow.open(map, marker);
+            });
+            markers.push(marker);
+        }
+        function clearAllMarkers() {
+            for (var i = 0; i < markers.length; i++) {
+                markers[i].setMap(null);
+            }
+            markers.length = 0;
+        }
     </script>
 
     <script type="text/javascript">
-    $( document ).ready(function() {
-      $('button#create-marker-button').click( function() {
-        $('div#marker-dialog').modal('hide');
-        $.post( 'service/marker', $('form#new-marker-form').serialize(), function(data) {
-             var marker = {
-                title: $('input#titleInput').val(),
-                description: $('textarea#descArea').val(),
-                lat: $('input#latInput').val(),
-                lng: $('input#lngInput').val()
-             };
-             createNewMarker(marker);
-             clearDialog();
-           }
-        );
-      });
-    });
+        $(document).ready(function () {
+            $('button#create-marker-button').click(function () {
+                $('div#marker-dialog').modal('hide');
+                $.post('service/marker', $('form#new-marker-form').serialize(), function (data) {
+                            var marker = {
+                                title: $('input#titleInput').val(),
+                                description: $('textarea#descriptionArea').val(),
+                                lat: $('input#latInput').val(),
+                                lng: $('input#lngInput').val()
+                            };
+                            createNewMarker(marker);
+                            clearDialog();
+                        }
+                );
+            });
+            $('button#search-button').click(function () {
+                clearAllMarkers();
+                var searchterm = $('input#search-term').val();
+                $.getJSON("marker?search=" + searchterm, function (data) {
+                    $.each(data, function (key, val) {
+                        createNewMarker(val);
+                    });
+                });
+            });
+        });
 
-    function clearDialog() {
-      $('input#titleInput').val("");
-      $('textarea#descArea').val("");
-      $('input#latInput').val("");
-      $('input#lngInput').val("");
-      $('input#hpInput').val("");
-      $('input#emailInput').val("");
-    }
+        function clearDialog() {
+            $('input#titleInput').val("");
+            $('textarea#descriptionArea').val("");
+            $('input#latInput').val("");
+            $('input#lngInput').val("");
+            $('input#hpInput').val("");
+            $('input#emailInput').val("");
+        }
     </script>
-  </head>
-  <body>
+</head>
+<body>
+<nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">Gotthelf Quartier Basel</a>
+        </div>
+        <form class="navbar-form navbar-right" role="search">
+            <div class="form-group">
+                <input type="text" id="search-term" class="form-control" placeholder="Suche">
+            </div>
+            <button type="button" id="search-button" class="btn btn-default">Suche</button>
+        </form>
+    </div>
+</nav>
+
 <div id="map-canvas"></div>
 
 <div id="marker-dialog" class="modal fade">
-  <div class="modal-dialog">
-    <div class="modal-content">
-    <form id="new-marker-form" role="form">
-      <div class="modal-body">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="new-marker-form" role="form">
+                <div class="modal-body">
 
-  <div class="form-group">
-    <label for="titleInput">Titel</label>
-    <input type="text" class="form-control" id="titleInput" name="title" placeholder="Titel eingeben">
-  </div>
-  <div class="form-group">
-    <label for="descArea">Beschreibung</label>
-    <textarea class="form-control" rows="5" id="descArea" name="desc" placeholder="Beschreibung eingeben"></textarea>
-  </div>
-  <input type="hidden" id="latInput" name="lat"/>
-  <input type="hidden" id="lngInput" name="lng"/>
-  <div class="form-group">
-    <label for="hpInput">Homepage</label>
-    <input type="text" class="form-control" id="hpInput" name="homepage" placeholder="Homepage eingeben">
-  </div>
-  <div class="form-group">
-    <label for="emailInput">Kontakt Email</label>
-    <input type="email" class="form-control" id="emailInput" name="email" placeholder="Email Adresse eingeben">
-  </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Abbrechen</button>
-        <button type="button" id="create-marker-button" class="btn btn-primary">Speichern</button>
-      </div>
-      </form>
+                    <div class="form-group">
+                        <label for="titleInput">Titel</label>
+                        <input type="text" class="form-control" id="titleInput" name="title" placeholder="Titel eingeben">
+                    </div>
+                    <div class="form-group">
+                        <label for="descriptionArea">Beschreibung</label>
+                        <textarea class="form-control" rows="5" id="descriptionArea" name="description" placeholder="Beschreibung eingeben"></textarea>
+                    </div>
+                    <input type="hidden" id="latInput" name="lat"/>
+                    <input type="hidden" id="lngInput" name="lng"/>
+
+                    <div class="form-group">
+                        <label for="hpInput">Homepage</label>
+                        <input type="text" class="form-control" id="hpInput" name="homepage" placeholder="Homepage eingeben">
+                    </div>
+                    <div class="form-group">
+                        <label for="emailInput">Kontakt Email</label>
+                        <input type="email" class="form-control" id="emailInput" name="email" placeholder="Email Adresse eingeben">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Abbrechen</button>
+                    <button type="button" id="create-marker-button" class="btn btn-primary">Speichern</button>
+                </div>
+            </form>
+        </div>
     </div>
-  </div>
 </div>
 
-  </body>
+</body>
 </html>
