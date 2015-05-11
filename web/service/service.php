@@ -19,21 +19,31 @@ $app->register(new Silex\Provider\DoctrineServiceProvider(), array(
     ),
 ));
 
-$app->get('/marker', function () use ($app) {
-    $output = '';
-    $markers = $app['db']->fetchAll('SELECT * FROM marker');
+$app->get('/marker', function (Request $request) use ($app) {
+    $searchterm = $request->get('search');
+    if($searchterm == null) {
+        $markers = $app['db']->fetchAll('SELECT * FROM marker');
+        return $app->json($markers);
+    } else {
+        $markers = $app['db']->fetchAssoc('SELECT * FROM marker WHERE tags LIKE ?', array('%'.$searchterm.'%'));
+        return $app->json($markers);
+    }
+});
+
+$app->get('/marker/{id}', function ($id) use ($app) {
+    $markers = $app['db']->fetchAssoc('SELECT * FROM marker WHERE id = ?', array((int) $id));
     return $app->json($markers);
 });
 
 $app->post('/marker', function (Request $request) use ($app) {
     $title = $request->get('title');
-    $description = $request->get('description');
+    $desc = $request->get('desc');
     $lat = $request->get('lat');
     $lng = $request->get('lng');
     $homepage = $request->get('homepage');
     $email = $request->get('email');
     $inserted = date ("Y-m-d H:i:s");
-    $app['db']->insert('marker', array('title' => $title, 'description' => $description, 'lat' => $lat, 'lng' => $lng, 'homepage' => $homepage, 'email' => $email, 'inserted' => $inserted));
+    $app['db']->insert('marker', array('title' => $title, 'description' => $desc, 'lat' => $lat, 'lng' => $lng, 'homepage' => $homepage, 'email' => $email, 'inserted' => $inserted));
 
     return new Response('new marker created', 201);
 });

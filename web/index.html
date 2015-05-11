@@ -76,7 +76,7 @@
         $.post( 'service/marker', $('form#new-marker-form').serialize(), function(data) {
              var marker = {
                 title: $('input#titleInput').val(),
-                description: $('textarea#descriptionArea').val(),
+                description: $('textarea#descArea').val(),
                 lat: $('input#latInput').val(),
                 lng: $('input#lngInput').val()
              };
@@ -89,7 +89,7 @@
 
     function clearDialog() {
       $('input#titleInput').val("");
-      $('textarea#descriptionArea').val("");
+      $('textarea#descArea').val("");
       $('input#latInput').val("");
       $('input#lngInput').val("");
       $('input#hpInput').val("");
@@ -111,8 +111,8 @@
     <input type="text" class="form-control" id="titleInput" name="title" placeholder="Titel eingeben">
   </div>
   <div class="form-group">
-    <label for="descriptionArea">Beschreibung</label>
-    <textarea class="form-control" rows="5" id="descriptionArea" name="description" placeholder="Beschreibung eingeben"></textarea>
+    <label for="descArea">Beschreibung</label>
+    <textarea class="form-control" rows="5" id="descArea" name="desc" placeholder="Beschreibung eingeben"></textarea>
   </div>
   <input type="hidden" id="latInput" name="lat"/>
   <input type="hidden" id="lngInput" name="lng"/>
