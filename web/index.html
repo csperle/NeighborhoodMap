@@ -88,7 +88,7 @@
         }
         function search() {
             clearAllMarkers();
-            var searchterm = $('input#search-term').val();
+            var searchterm = $('input#search-term').val().trim();;
             $.getJSON("service/marker?search=" + searchterm, function (data) {
                 $.each(data, function (key, val) {
                     createNewMarker(val);
