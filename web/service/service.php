@@ -26,7 +26,7 @@ $app->get('/marker', function (Request $request) use ($app) {
         $markers = $app['db']->fetchAll('SELECT * FROM marker');
         return $app->json($markers);
     } else {
-        $markers = $app['db']->fetchAll('SELECT * FROM marker WHERE tags LIKE ?', array('%' . $searchterm . '%'));
+        $markers = $app['db']->fetchAll('SELECT * FROM marker WHERE tags LIKE ? OR provider LIKE ?', array('%'.$searchterm.'%', '%'.$searchterm.'%'));
         return $app->json($markers);
     }
 });
