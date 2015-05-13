@@ -22,7 +22,7 @@ $app->register(new Silex\Provider\DoctrineServiceProvider(), array(
 
 $app->get('/marker', function (Request $request) use ($app) {
     $searchterm = $request->get('search');
-    if ($searchterm == null) {
+    if ($searchterm == null || $searchterm === '') {
         $markers = $app['db']->fetchAll('SELECT * FROM marker');
         return $app->json($markers);
     } else {
