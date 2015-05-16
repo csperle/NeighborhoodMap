@@ -73,7 +73,18 @@
                 icon: markerimage
             });
             var infowindow = new google.maps.InfoWindow({
-                content: '<div id="content">' + data.description + '</div>'
+                content: '<form class="form-horizontal">' +
+                '<fieldset>' +
+
+                '<legend>' + data.provider + '</legend>' +
+
+                '<p>' + data.address + '</p>' +
+                '<p>' + data.contact + ' - <a href="tel:' + data.phone + '">' + data.phone + '</a></p>' +
+                '<p><a href="mailto:' + data.email + '">' + data.email + '</a></p>' +
+                '<p><a href="http://' + data.homepage + '" target="_blank">' + data.homepage + '</a></p>' +
+
+                '</fieldset>' +
+                '</form>'
             });
             google.maps.event.addListener(marker, 'click', function () {
                 infowindow.open(map, marker);
@@ -88,7 +99,7 @@
         }
         function search() {
             clearAllMarkers();
-            var searchterm = $('input#search-term').val().trim();;
+            var searchterm = $('input#search-term').val().trim();
             $.getJSON("service/marker?search=" + searchterm, function (data) {
                 $.each(data, function (key, val) {
                     createNewMarker(val);
