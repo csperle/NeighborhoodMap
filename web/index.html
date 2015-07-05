@@ -20,6 +20,9 @@
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
 
+    <!-- Autocomplete library for search tags -->
+    <script src="js/bootstrap3-typeahead.min.js"></script>
+
     <style type="text/css">
         html, body, #map-canvas {
             height: 100%;
@@ -32,24 +35,26 @@
         }
     </style>
 
-    <script src="https://maps.googleapis.com/maps/api/js?key=API_KEY"></script>
+    <script src="https://maps.googleapis.com/maps/api/js"></script> <!-- Add your google maps api key here (optional) -->
 
     <script type="text/javascript">
         function initialize() {
             markers = [];
             var mapOptions = {
-                center: new google.maps.LatLng(47.553987, 7.568083),
+                center: new google.maps.LatLng(47.553987, 7.568083), <!-- Change the map options here -->
                 zoom: 16
             };
             map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
-
+        /*
             google.maps.event.addListener(map, "click", function (event) {
                 $('input#latInput').val(event.latLng.lat());
                 $('input#lngInput').val(event.latLng.lng());
                 $('div#marker-dialog').modal({})
             });
+         */
             google.maps.event.addListenerOnce(map, 'idle', function () {
                 showAllMarkers();
+                loadAllTags()
             });
         }
         google.maps.event.addDomListener(window, 'load', initialize);
@@ -97,13 +102,20 @@
             }
             markers.length = 0;
         }
+
         function search() {
             clearAllMarkers();
-            var searchterm = $('input#search-term').val().trim();
+            var searchterm = $('input#search-field').val().trim();
             $.getJSON("service/marker?search=" + searchterm, function (data) {
                 $.each(data, function (key, val) {
                     createNewMarker(val);
                 });
+            });
+        }
+
+        function loadAllTags() {
+            $.getJSON("service/tag", function (data) {
+                $('input#search-field').typeahead({ source: data });
             });
         }
     </script>
@@ -131,7 +143,7 @@
                 search();
             });
             $('button#clear-button').click(function () {
-                $('input#search-term').val('');
+                $('input#search-field').val('');
                 showAllMarkers();
             });
         });
@@ -154,7 +166,7 @@
         </div>
         <form id="searchForm" class="navbar-form navbar-right" role="search">
             <div class="form-group">
-                <input type="text" id="search-term" class="form-control" placeholder="Suche">
+                <input type="text" id="search-field" class="form-control" data-provide="typeahead" autocomplete="off" placeholder="Suche">
             </div>
             <button type="submit" id="search-button" class="btn btn-default">Suchen</button>
             <button type="button" id="clear-button" class="btn">Alle Anzeigen</button>

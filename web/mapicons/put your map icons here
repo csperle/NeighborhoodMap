@@ -1,1 +1,2 @@
-put your map icons into this folder
+Put your map icons into this folder and name them like the 'icon'-attributes of the 'marker'-records (+ '.png').
+At least a icon with the name 'default.png' has to be provided.

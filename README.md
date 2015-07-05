@@ -35,14 +35,15 @@ Configure the application:
 ### Configure the database settings
 Open `web/service/service.php` with a text editor and fill in the correct values for `DB_NAME`, `DB_USER`, `DB_PASSWORD` and `DB_HOST`.
 
-###Configure the Google Maps API key
-Open `web/index.html` with a text editor and fill in your Google Maps API Key for `API_KEY`.
+###Configure the Google Maps API key (Optional)
+Open `web/index.html` with a text editor and complement the Google maps URL with your API Key for (see [Sign Up for the Google Maps API](https://developers.google.com/maps/signup)).
 
 ###Change map options
 Change the map options: `center` and `zoom`.
 
 ###Setup map icons
-As can be seen in `web/index.html` map icons have to be put into the `mapicons/` folder.
+The icons that are used to display the coordinates on the map have to be saved within the `mapicons/` folder. 
+The name of the icon has to be the same as the `icon`-attribute of the `marker` records (+ '.png'). At least a icon with the name 'default.png' has to be provided.
 
 ## Installation
 Now that you have set-up and configured the application, copy the `web`-folder to the webspace of your hoster. Installation complete!

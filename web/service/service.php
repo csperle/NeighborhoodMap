@@ -49,6 +49,12 @@ $app->post('/marker', function (Request $request) use ($app) {
     return new Response('new marker created', 201);
 });
 
+
+$app->get('/tag', function () use ($app) {
+    $tags = $app['db']->fetchAll('SELECT * FROM tag');
+    return $app->json($tags);
+});
+
 $app->run();
 
 ?>
