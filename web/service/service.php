@@ -56,5 +56,3 @@ $app->get('/tag', function () use ($app) {
 });
 
 $app->run();
-
-?>
